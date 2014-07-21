@@ -1,0 +1,18 @@
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\EasyWay.DataLayer.dll
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\EasyWay.DataLayer.pdb
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\BusinessObjects.dll
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\EasyWay.CoreDataLayer.dll
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\BusinessObjects.pdb
+E:\EasyWay\CoreDataLayer\DataLayer\bin\Debug\EasyWay.CoreDataLayer.pdb
+E:\EasyWay\CoreDataLayer\DataLayer\obj\Debug\DataLayer.csprojResolveAssemblyReference.cache
+E:\EasyWay\CoreDataLayer\DataLayer\obj\Debug\EasyWay.DataLayer.dll
+E:\EasyWay\CoreDataLayer\DataLayer\obj\Debug\EasyWay.DataLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\EasyWay.DataLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\EasyWay.DataLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\BusinessObjects.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\EasyWay.CoreDataLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\BusinessObjects.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\bin\Debug\EasyWay.CoreDataLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\obj\Debug\DataLayer.csprojResolveAssemblyReference.cache
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\obj\Debug\EasyWay.DataLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\DataLayer\obj\Debug\EasyWay.DataLayer.pdb

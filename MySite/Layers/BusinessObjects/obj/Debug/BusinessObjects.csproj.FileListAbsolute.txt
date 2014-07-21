@@ -1,0 +1,9 @@
+E:\EasyWay\CoreDataLayer\BusinessObjects\bin\Debug\BusinessObjects.dll
+E:\EasyWay\CoreDataLayer\BusinessObjects\bin\Debug\BusinessObjects.pdb
+E:\EasyWay\CoreDataLayer\BusinessObjects\obj\Debug\BusinessObjects.csprojResolveAssemblyReference.cache
+E:\EasyWay\CoreDataLayer\BusinessObjects\obj\Debug\BusinessObjects.dll
+E:\EasyWay\CoreDataLayer\BusinessObjects\obj\Debug\BusinessObjects.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessObjects\bin\Debug\BusinessObjects.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessObjects\bin\Debug\BusinessObjects.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessObjects\obj\Debug\BusinessObjects.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessObjects\obj\Debug\BusinessObjects.pdb

@@ -1,0 +1,99 @@
+category table
+---------------
+create table tbl_category(categoryid int not null primary key,categoryname varchar(50) not null,parentid int not null,status bit,createddate datetime default getdate())
+
+product table
+--------------
+create table tbl_products(productid int identity(1,1) primary key,pcode varchar(25),productname varchar(100), productshortdesc nvarchar(2000), productLongdesc text,isActive bit,brandid int,price decimal(10,2), marketprice Decimal(10,2),isproductsale bit,saletype varchar(5),priceorpercent decimal(10,2),createddate datetime default getdate(),updateddate datetime,isHot bit,hotdealstext varchar(255),qtyincart int,qtytext varchar(10))
+
+Product image table
+===================
+create table tbl_productphotos(photoid int identity(1,1) primary key,productid int,photopath varchar(250),modifieddate datetime)
+
+product-category table
+----------------------
+create table tbl_ProductCategory(procatid int identity(1,1) primary key,categoryid int,productid int)
+
+AttributeType table
+-------------------
+Create table tbl_AttributeType(Attributetypeid int identity(1,1) primary key,Attributetypename varchar(100),isactive bit,createddate datetime default getdate())
+
+Attributes table
+-----------------
+create table tbl_Attributes(attributeid int identity(1,1) primary key,Attributename varchar(100),Attributedesc varchar(500),AttributeTypeId int,parentid int,isactive bit,createddate datetime default getdate())
+
+Product-Attribute table
+-----------------------
+create table tbl_productatt(productid int,attributeid int)
+
+brands table
+------------
+create table tbl_brands(brandid int identity(1,1),brandname varchar(100),isactive bit,createddate datetime default getdate())
+
+Product review table
+---------------------
+create table tbl_productreview(reviewid int identity(1,1) primary key,title varchar(50),reviewtext varchar(250),productid int,statusid int,rating int,name varchar(50),reviewdate datetime default getdate())
+
+
+customer table
+--------------
+create table tbl_customer(customerid int identity(1,1),email varchar(50),pwd varchar(30),createddate datetime default getdate(),lastlogin datetime,firstname varchar(100),lastname varchar(100),isactive bit,issuperadmin bit)
+
+status table
+------------
+create table tbl_status(statusid int,statusname varchar(15))
+
+
+Insert script
+------------
+
+insert into tbl_category(categoryname,parentid,status,createddate)values('Electronics',0,1,getdate());
+insert into tbl_category(categoryname,parentid,status,createddate)values('Mobiles',1,1,getdate());
+insert into tbl_category(categoryname,parentid,status,createddate)values('Home & Kitchen',0,1,getdate());
+
+insert into tbl_brands(brandname,isactive,createddate)values('Samsung',1,getdate())
+insert into tbl_brands(brandname,isactive,createddate)values('LG',1,getdate())
+insert into tbl_brands(brandname,isactive,createddate)values('Sony',1,getdate())
+insert into tbl_brands(brandname,isactive,createddate)values('Karbonn',1,getdate())
+
+
+insert into tbl_attributetype(attributetypename,isactive,createddate)values('Colors',1,getdate())
+insert into tbl_attributetype(attributetypename,isactive,createddate)values('Size',1,getdate())
+
+
+insert into tbl_attributes(attributename,attributedesc,attributetypeid,parentid,isactive,createddate)values('Red','red desc',1,0,1,getdate())
+insert into tbl_attributes(attributename,attributedesc,attributetypeid,parentid,isactive,createddate)values('White','desc',1,0,1,getdate())
+insert into tbl_attributes(attributename,attributedesc,attributetypeid,parentid,isactive,createddate)values('6','foot wear',2,0,1,getdate())
+
+
+insert into tbl_products(Pcode,productname,productshortdesc,productlongdesc,isactive,brandid,price,marketprice,isproductsale,saletype,priceorpercent,createddate,updateddate,ishot,hotdealstext,qtyincart,qtytext)values
+('SNYM','Sony xperia M','<div>Sony xperia m with dual sim&nbsp;</div>','<div>,1 GHZ processor,1GB RAM,5 MP rear camera</div>
+<div><br />
+</div>
+<div><span style="color: #ff0000; font-weight: bold;">1.3 MP front camera.</span></div>',1,3,14500,null,1,'P',5,getdate(),null,0,'',5,'Qty');
+
+
+insert into tbl_products(Pcode,productname,productshortdesc,productlongdesc,isactive,brandid,price,marketprice,isproductsale,saletype,priceorpercent,createddate,updateddate,ishot,hotdealstext,qtyincart,qtytext)values
+('SDOS','Samsung duos','samsung duoes updates','samsung duoes updates long desc',1,1,15500,null,0,'',0,getdate(),null,1,'Hot deals',7,'Qty');
+
+insert into tbl_productcategory(categoryid,productid)values(2,1)
+insert into tbl_productcategory(categoryid,productid)values(1,3)
+
+
+insert into tbl_productphotos(productid,photopath,modifieddate,seqno)values(1,'Penguins.jpg',null,1)
+insert into tbl_productphotos(productid,photopath,modifieddate,seqno)values(2,'Koala.jpg',null,2)
+insert into tbl_productphotos(productid,photopath,modifieddate,seqno)values(3,'Image_20140212080708206_9e864087-f4f7-42ec-92ff-0e17d589d448.jpg',null,1)
+
+insert into tbl_status values(1,'New')
+INSERT INTO tbl_status values(2, 'Active')
+INSERT INTO tbl_status values(2, 'Inactive')
+INSERT INTO tbl_status values(2, 'Deleted')
+INSERT INTO tbl_status values(2, 'Archieved')
+
+
+
+
+
+
+
+

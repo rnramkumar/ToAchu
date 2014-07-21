@@ -1,0 +1,22 @@
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.BusinessLayer.dll
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.BusinessLayer.pdb
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\BusinessObjects.dll
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.DataLayer.dll
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.CoreDataLayer.dll
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\BusinessObjects.pdb
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.DataLayer.pdb
+E:\EasyWay\CoreDataLayer\BusinessLayer\bin\Debug\EasyWay.CoreDataLayer.pdb
+E:\EasyWay\CoreDataLayer\BusinessLayer\obj\Debug\BusinessLayer.csprojResolveAssemblyReference.cache
+E:\EasyWay\CoreDataLayer\BusinessLayer\obj\Debug\EasyWay.BusinessLayer.dll
+E:\EasyWay\CoreDataLayer\BusinessLayer\obj\Debug\EasyWay.BusinessLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\obj\Debug\BusinessLayer.csprojResolveAssemblyReference.cache
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\obj\Debug\EasyWay.BusinessLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.BusinessLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.BusinessLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\BusinessObjects.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.DataLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.CoreDataLayer.dll
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\BusinessObjects.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.DataLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\bin\Debug\EasyWay.CoreDataLayer.pdb
+C:\Users\Ramkumar\Documents\Visual Studio 2012\Projects\MySite\Layers\BusinessLayer\obj\Debug\EasyWay.BusinessLayer.pdb

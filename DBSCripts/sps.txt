@@ -1,0 +1,765 @@
+create procedure pr_inscategory  
+
+ @categoryName varchar(50),  
+ @parentId int
+ 
+as  
+ 
+begin 
+  
+ insert into tbl_category(categoryname,parentid,status)Values(@categoryName, @parentId,1)  
+end  
+  
+
+go
+
+create procedure pr_updcategory
+ @categoryId int,
+ @categoryName varchar(50),
+ @status bit
+as
+begin
+ update tbl_category set categoryName=@categoryName,status=@status where categoryid=@categoryId
+end
+
+go
+
+create  procedure pr_delcategory
+ @categoryId int
+as
+begin
+ delete from tbl_category where categoryId=@categoryId
+end
+
+go
+
+create  procedure pr_selcategory
+as
+begin
+ select categoryid,categoryname,parentid,CASE status WHEN 'True' THEN 'Active' ELSE 'Inactive' END AS statusname,status from tbl_category
+end
+
+go
+
+
+create procedure pr_insProduct(      
+@prodName varchar(100),
+@prodcode varchar(15),      
+@prodShortDesc nvarchar(2000),      
+@prodLongDesc text, 
+@price numeric,
+@brandid int,
+@isstatus bit,
+@isproductonsale bit,
+@saletype varchar(10),
+@priceorpercent numeric,
+@isHot bit,
+@hotText varchar(100),
+@prodImage varchar(2000),
+@categories varchar(2000),
+@qtyincart int,
+@qtytext varchar(10)
+)      
+as     
+begin    
+declare @prodId int    
+declare @v_id varchar(1000)  
+declare @v_ids varchar(2000)  
+declare @v_position_id int  
+declare @v_oldposition_id int  
+  
+set @v_id=''
+set @v_ids=''  
+set @v_position_id=0  
+set @v_oldposition_id=0  
+        
+ insert into tbl_products(ProductName,pcode,ProductShortDesc,ProductLongDesc,Price,brandid,isActive,isproductsale,saletype,priceorpercent,isHot,hotdealsText,createddate,qtyincart,qtytext)      
+values(@prodName,@prodcode,@prodShortDesc,@prodLongDesc,@price,@brandid,@isstatus,@isproductonsale,@saletype,@priceorpercent,@ishot,@hottext,getdate(),@qtyincart,@qtytext)       
+    
+set @prodId = @@Identity    
+
+ set @v_ids = @categories
+
+ select @v_position_id = charindex(',',@v_ids,@v_position_id)  
+  
+ while(@v_position_id > 0)  
+ begin  
+  set @v_id = substring(@v_ids,@v_oldposition_id+1,@v_position_id-@v_oldposition_id-1)  
+  insert into tbl_ProductCategory(categoryid,productid) values(cast(@v_id as int),@prodId)
+  set @v_oldposition_id = @v_position_id  
+  select @v_position_id = charindex(',',@v_ids,@v_position_id+1)  
+ end
+
+set @v_id = ''
+set @v_ids = ''
+set @v_position_id=0
+set @v_oldposition_id=0 
+
+set @v_ids = @prodImage
+  
+ select @v_position_id = charindex(',',@v_ids,@v_position_id)  
+  
+ while(@v_position_id > 0)  
+ begin  
+  set @v_id = substring(@v_ids,@v_oldposition_id+1,@v_position_id-@v_oldposition_id-1)  
+  insert into tbl_productphotos(productid,photopath) values(@prodId, @v_id)
+  set @v_oldposition_id = @v_position_id  
+  select @v_position_id = charindex(',',@v_ids,@v_position_id+1)  
+end 
+
+  
+end
+
+
+go
+
+create procedure [dbo].[pr_getallproductsAdmin]
+as
+begin
+
+select p.ProductId,p.ProductName,p.Pcode,p.Price,p.isactive from  tbl_products p
+order by p.createddate desc
+
+end
+
+go
+
+create procedure [dbo].[pr_getallproducts]
+@categoryId int,
+@searchText varchar(50)
+as
+begin
+declare @filter varchar(1000)  
+declare @sql varchar(8000)  
+set @filter=''   
+  
+if @categoryId<> 0  
+begin  
+ set @filter =' and c.categoryId ='+cast(@categoryId as varchar(10))  
+end    
+  
+if @searchText<>''
+begin  
+ set @filter = @filter + ' and p.productname like ''%'+@searchText+'%'''  
+end  
+
+set @sql = 'SELECT  p.productid, p.productname, pp.photopath, c.categoryname, p.productshortdesc, p.priceorpercent, p.price, p.createddate, p.isHot, p.hotdealstext, p.isproductsale,p.saletype
+FROM            tbl_category AS c INNER JOIN 
+                tbl_ProductCategory AS pc ON c.categoryid = pc.categoryid INNER JOIN
+                tbl_products AS p ON pc.productid = p.productid INNER JOIN
+                tbl_productphotos AS pp ON p.productid = pp.productid
+WHERE        (p.isActive = 1) AND (pp.seqno = 1)'
+
+set @sql = @sql + @filter  
+exec(@sql)  
+end
+
+go
+
+create  procedure pr_delproduct
+ @productId int
+as
+begin
+ delete from tbl_productcategory where productid = @productId
+ delete from tbl_productphotos where productId=@productId
+delete from tbl_products where productid=@productid
+ --update tbl_products set StatusId=2 where productId=@productId
+end
+
+go
+
+create  procedure pr_getProductDetailsById
+ @productId int
+as
+begin
+
+select ProductId,ProductName,pcode,ProductShortDesc,ProductLongDesc,Price,brandid,isactive,marketprice,isproductsale,saletype,priceorpercent,ishot,hotdealsText,qtyincart,qtytext
+from  tbl_products  where productid=@productId
+
+select categoryid from tbl_productcategory  where productId=@productId
+
+select photopath from tbl_productphotos where productId=@productId
+
+
+SELECT count(productid) as TotalRating, AVG(rating) AS rating FROM tbl_productreview
+where productid=@productId and statusid=2
+GROUP BY productid
+
+end 
+
+go
+
+
+
+
+
+create procedure pr_getorderdetailsbyId
+(
+ @orderid int
+)
+as
+begin
+declare @custid int,@custaddid int
+SELECT     @custid=customerid ,@custaddid=custaddid from tbl_order where orderid=@orderid  
+
+select email,name,c.createddate,shipping_name,shipping_address1,shipping_address2,shipping_city,shipping_state,shipping_phone,shipping_email,shipping_postalcode,ShippingAddSaveName
+ from tbl_customer c,tbl_customeradd cadd where c.customerid=@custid and custaddid=@custaddid
+ and  c.customerid=cadd.customerid
+
+
+SELECT        p.productname,p.pcode, p.price, p.isproductsale,p.saletype, (CASE WHEN p.saletype = 'P' THEN (p.price - (p.price * p.priceorpercent / 100)) 
+                         WHEN p.saletype = 'S' THEN (p.price - p.priceorpercent) ELSE p.price END) AS DiscPrice, p.priceorpercent, det.productid, det.qty
+FROM            tbl_orderdetails AS det INNER JOIN
+                         tbl_products AS p ON det.productid = p.productid
+WHERE        (det.orderid = @orderid)
+end
+
+go
+
+
+
+
+create procedure pr_changestatus(      
+ @statusId int,
+ @productId varchar(1000)
+)      
+as     
+begin    
+
+declare @v_id varchar(50)  
+declare @v_ids varchar(50)  
+declare @v_position_id int  
+declare @v_oldposition_id int  
+
+set @v_id=''  
+set @v_ids=''  
+set @v_position_id=0  
+set @v_oldposition_id=0
+
+  
+ set @v_ids =  @productId+',' 
+ select @v_position_id = charindex(',',@v_ids,@v_position_id)  
+
+ while(@v_position_id > 0)  
+ begin  
+
+	 set @v_id = substring(@v_ids,@v_oldposition_id+1,@v_position_id-@v_oldposition_id-1)  
+
+	 update tbl_product set statusId=@statusId where productId=cast(@v_id as int)       
+   
+  set @v_oldposition_id = @v_position_id  
+  select @v_position_id = charindex(',',@v_ids,@v_position_id+1)  
+ end  
+
+end
+go
+
+create procedure pr_updProduct(      
+@productid int,
+@prodName varchar(100),
+@prodcode varchar(15),      
+@prodShortDesc nvarchar(2000),      
+@prodLongDesc text, 
+@price numeric,
+@brandid int,
+@isstatus bit,
+@isproductonsale bit,
+@saletype varchar(10),
+@priceorpercent numeric,
+@isHot bit,
+@hotText varchar(100),
+@prodImage varchar(2000),
+@categories varchar(2000),
+@qtyincart int,
+@qtytext varchar(10)
+)      
+as     
+begin    
+    
+declare @v_id varchar(1000)  
+declare @v_ids varchar(2000)  
+declare @v_position_id int  
+declare @v_oldposition_id int  
+  
+set @v_id=''
+set @v_ids=''  
+set @v_position_id=0  
+set @v_oldposition_id=0  
+        
+update  tbl_products set ProductName=@prodName,pcode=@prodcode,ProductShortDesc=@prodShortDesc,ProductLongDesc=@prodLongDesc,
+Price=@price,brandid=@brandid,isActive=@isstatus,isproductsale=@isproductonsale,saletype=@saletype,priceorpercent=@priceorpercent,isHot=@ishot,
+hotdealsText=@hottext,updateddate=getdate(),qtyincart=@qtyincart,qtytext=@qtytext      where productid=@productid
+
+delete from tbl_productcategory where productid=@productid
+    
+ set @v_ids = @categories
+
+ select @v_position_id = charindex(',',@v_ids,@v_position_id)  
+  
+ while(@v_position_id > 0)  
+ begin  
+  set @v_id = substring(@v_ids,@v_oldposition_id+1,@v_position_id-@v_oldposition_id-1)  
+  insert into tbl_ProductCategory(categoryid,productid) values(cast(@v_id as int),@productId)
+  set @v_oldposition_id = @v_position_id  
+  select @v_position_id = charindex(',',@v_ids,@v_position_id+1)  
+ end
+
+delete from  tbl_productphotos where productid=@productid
+set @v_id = ''
+set @v_ids = ''
+set @v_position_id=0
+set @v_oldposition_id=0 
+
+set @v_ids = @prodImage
+  
+ select @v_position_id = charindex(',',@v_ids,@v_position_id)  
+  
+ while(@v_position_id > 0)  
+ begin  
+  set @v_id = substring(@v_ids,@v_oldposition_id+1,@v_position_id-@v_oldposition_id-1)  
+  insert into tbl_productphotos(productid,photopath) values(@productid, @v_id)
+  set @v_oldposition_id = @v_position_id  
+  select @v_position_id = charindex(',',@v_ids,@v_position_id+1)  
+end 
+
+  
+end
+
+go
+
+
+CREATE PROCEDURE PR_INSPRODREVIEW
+@title varchar(25),
+@pid int,
+@reviewtext varchar(250),
+@reviewername varchar(100),
+@rating decimal(10,2)
+AS
+BEGIN
+insert into tbl_productreview(title,reviewtext,name,productid,rating,statusid,reviewdate) values(@title,@reviewtext,@reviewername,@pid,@rating,1,getdate())
+END
+go
+
+CREATE PROCEDURE pr_getallprodreviews
+@pid int
+AS
+BEGIN
+select title,reviewtext,name,productid,rating,reviewdate from  tbl_productreview where productid=@pid and statusid=2
+
+
+
+END
+
+go
+
+create procedure pr_insattributetype  
+
+ @attributetypeName varchar(50)
+as  
+ 
+begin 
+  
+insert into tbl_attributetype(attributetypeName,isactive,createddate)Values(@attributetypeName,1,getdate())  
+end  
+
+go
+
+create procedure pr_updattributetype 
+@attributetypeid int,
+ @attributetypeName varchar(50),
+ @status bit
+as  
+ 
+begin 
+  
+update tbl_attributetype set attributetypeName=@attributetypeName,isactive=@status where attributetypeid=@attributetypeid
+  
+end  
+
+go
+
+create procedure pr_selattributetype 
+as  
+
+begin 
+  
+select attributetypeid,attributetypename,CASE isactive WHEN 'True' THEN 'Active' ELSE 'Inactive' END AS statusname,isactive as status,createddate from tbl_attributetype
+  
+end  
+
+go
+
+create procedure pr_insattributes  
+ @attributeName varchar(50),
+@attributedesc varchar(100),
+@typeid int
+as  
+ 
+begin 
+  
+ insert into tbl_attributes(Attributename,Attributedesc,AttributeTypeId,parentid,isactive)Values(@attributeName,@attributedesc,@typeid,0,1)  
+end  
+
+go
+
+create procedure pr_updattributes 
+@attributeid int,
+ @attributeName varchar(50),
+@attributedesc varchar(100),
+ @status bit
+as  
+ 
+begin 
+  
+update tbl_attributes set attributeName=@attributeName,attributedesc=@attributedesc,isactive=@status where attributeid=@attributeid
+  
+end  
+
+go
+
+ALTER procedure pr_selattributes
+as  
+
+begin 
+  
+select attributeid,attributename,attributedesc,CASE isactive WHEN 'True' THEN 'Active' ELSE 'Inactive' END AS statusname,isactive as status,createddate from  tbl_attributes  
+end  
+
+go
+
+create procedure pr_selattributesbyType
+@attributetypeid int
+as  
+
+begin 
+  
+select attributeid,attributename,attributedes,CASE isactive WHEN 'True' THEN 'Active' ELSE 'Inactive' END AS statusname,isactive as status,createddate from  tbl_attributes  
+where attributetypeid=@attributetypeid
+end  
+
+
+go
+
+
+create table tbl_contactus
+(
+contactId int primary key identity(1,1),
+contactName varchar(100),
+Email varchar(50),
+contactsubject varchar(100),
+comments varchar(1000), 
+isContact bit,
+typeoffeedback varchar(25),
+postedDate datetime
+)
+
+go
+
+create procedure pr_insContactUs  
+ @contactName varchar(100),  
+ @email varchar(50),
+ @contactSubject varchar(100),
+ @comments varchar(1000),
+ @isContact bit,
+ @typeoffeedback varchar(25)  
+as  
+ 
+begin 
+  
+ insert into tbl_contactus(contactName,email,contactSubject,comments,isContact,typeoffeedback,postedDate)
+  Values(@contactName, @email,@contactSubject,@comments,@isContact,@typeoffeedback,getdate())  
+end  
+go
+
+-- Banners
+
+CREATE TABLE tbl_BannerAds (
+	[AdId] [int] primary key IDENTITY (1, 1),
+	[Category] [varchar] (20) ,
+	[AdvName] [varchar] (100) ,
+	[ImageName] [varchar] (255),
+	[Width] [smallint] NOT NULL ,
+	[Height] [smallint] NOT NULL ,
+	[StartDate] [datetime] NOT NULL ,
+	[EndDate] [datetime] NOT NULL ,
+	[RedirectURL] [varchar] (255) ,
+	[Active] [bit] NOT NULL ,
+	[AltText] [varchar] (255),
+	[Weightage] [smallint] NOT NULL,
+	PostedDate datetime,
+	LastUpdateDate datetime 
+) 
+go
+
+
+CREATE PROCEDURE pr_InsBannerAd
+(      	
+	@Category varchar (20),
+	@AdvName varchar (100),
+	@ImageName varchar (255),
+	@Width smallint,
+	@Height smallint,
+	@StartDate datetime,
+	@EndDate datetime,
+	@RedirectURL varchar (255),
+	@Active bit,
+	@AltText varchar (255),
+	@Weightage smallint
+)
+
+AS
+Begin
+INSERT INTO tbl_BannerAds
+(
+	Category,
+	AdvName,
+	ImageName,
+	Width,
+	Height,
+	StartDate,
+	EndDate,
+	RedirectURL,
+	Active,
+	AltText,
+	Weightage,
+	PostedDate
+)
+VALUES
+(
+	@Category,
+	@AdvName,
+	@ImageName,
+	@Width,
+	@Height,
+	@StartDate,
+	@EndDate,
+	@RedirectURL,
+	@Active,
+	@AltText,
+	@Weightage,
+	getDate()
+)
+end
+go
+
+
+CREATE  PROCEDURE pr_getBannerAdById
+(
+	@AdId int
+)
+AS
+begin
+
+Select Adid,Category,advname,ImageName,Active,weightage,height,width,AltText,redirectURL,startDate,endDate From tbl_BannerAds  Where AdId  = @AdId
+end
+GO
+
+create PROCEDURE pr_getAllCarousels
+AS
+begin
+	Select AdId, ImageName, Height, Width, AltText,RedirectURL From tbl_BannerAds WHERE category='Carousel' and active=1
+end
+	
+go
+
+create procedure pr_getallbanner
+as
+begin 
+select ba.Adid,Category,advname,ImageName,Active,weightage,(Select Count(*) From tbl_BannerAdTracking  Where AdId = ba.AdId) hitCount
+ from tbl_bannerads ba left outer join tbl_BannerAdTracking t on ba.adid=t.adId
+end
+
+CREATE PROCEDURE pr_delBannerAd
+(      	
+	@AdId int
+)
+
+AS
+
+DELETE FROM tbl_bannerads WHERE AdId = @AdId
+GO
+
+CREATE PROCEDURE pr_UpdBannerAd
+(      	
+	@AdId int,
+	@Category varchar (20),
+	@AdvName varchar (100),
+	@ImageName varchar (255),
+	@Width smallint,
+	@Height smallint,
+	@StartDate datetime,
+	@EndDate datetime,
+	@RedirectURL varchar (255),
+	@Active bit,
+	@AltText varchar (255),
+	@Weightage smallint
+	
+)
+
+AS
+
+UPDATE tbl_bannerads SET
+
+	Category = @Category,
+	AdvName =  @AdvName,
+	ImageName = @ImageName,
+	Width = @Width,
+	Height = @Height,
+	StartDate = @StartDate,
+	EndDate = @EndDate,
+	RedirectURL = @RedirectURL,
+	Active = @Active,
+	AltText = @AltText,
+	Weightage = @Weightage,
+	LastUpdateDate = getdate()
+
+WHERE AdId = @AdId
+GO
+
+CREATE PROCEDURE pr_InsAdtracking
+(      
+	@AdId int,
+	@IPAddress varchar(20)
+)
+
+AS
+
+INSERT INTO tbl_BannerAdTracking
+(
+	AdId,
+	IPAddress,
+	PostedDate
+
+)
+VALUES
+(
+	@AdId,
+	@IPAddress,
+	getdate()
+)
+select RedirectURL FROM tbl_BannerAds WHERE AdId = @AdId
+GO
+
+--Critical Updates
+
+create table tbl_criticalupdates
+(
+criticalId int identity(1,1) primary key,
+criticalMessage varchar(5000),
+effectiveDate datetime,
+expiryDate datetime,
+postedDate datetime,
+lastUpdatedDate datetime
+)
+
+create procedure pr_insCriticalUpdate
+ @criticalMessage varchar(5000),
+ @effectiveDate varchar(15),
+ @expiryDate varchar(15)
+as
+begin
+ insert into tbl_criticalupdates(criticalMessage,effectiveDate,expiryDate,postedDate)
+Values(@criticalMessage,cast(@effectiveDate as datetime),cast(@expiryDate as datetime),getdate())
+end
+
+go
+
+create procedure pr_updCriticalUpdate
+ @criticalId int,
+ @criticalMessage varchar(5000),
+ @effectiveDate varchar(15),
+ @expiryDate varchar(15)
+as
+begin
+  update tbl_criticalupdates set criticalMessage=@criticalMessage,effectiveDate=cast(@effectiveDate as datetime),expiryDate=cast(@expiryDate as datetime),
+  lastUpdatedDate=getdate() where criticalId=@criticalId
+
+end
+go
+
+
+create  procedure pr_delCriticalUpdate
+ @criticalId int
+as
+begin
+ delete from tbl_criticalupdates where criticalId=@criticalId
+end
+go
+
+create  procedure pr_selCriticalUpdates
+as
+begin
+ select criticalId,criticalMessage,effectiveDate,expiryDate from tbl_criticalUpdates
+end
+
+go
+
+create  procedure pr_getCriticalUpdates
+as
+begin
+ select criticalId,criticalMessage from tbl_criticalUpdates where datediff(day,getdate(), expiryDate) >=0
+end
+go
+
+ALTER procedure [dbo].[pr_displayallproducts]    
+@statusId int,  
+@categoryId int,  
+@searchText varchar(50)  
+  
+as   
+declare @filter varchar(1000)  
+declare @sql varchar(8000)  
+set @filter=''   
+begin  
+  
+if @categoryId<> -1  
+begin  
+ set @filter =' and c.categoryId ='+ cast(@categoryId as varchar(10))  
+end    
+  
+if @statusId <> -1  
+begin  
+set @filter = @filter + ' and p.statusId='+cast(@statusId as varchar(2))  
+end  
+  
+if @searchText <>''  
+begin  
+ set @filter = @filter + ' and p.productname ='''+@searchText+''''  
+end  
+   
+set @sql = 'select p.ProductId,p.ProductName,p.ProdShortDesc,p.ProdLongDesc,p.ProdImage,p.ShopName,p.OfferPercentage,  
+p.categoryid,c.categoryname,p.Price,p.PostedDate,p.EffectiveDate,p.ExpiryDate,p.isHot,p.seqNo,p.SeqPeriod,p.cityid,
+city.cityname,city.stateid,
+p.hotText    
+from  tbl_product p, tbl_category c,tbl_city city    
+ where c.categoryid=p.categoryid and city.cityid = p.cityid    
+  and datediff(day,p.expirydate,getdate()) >=0 '  
+  
+set @sql = @sql + @filter  
+  
+exec(@sql)  
+print @sql  
+end 
+
+   go
+
+create procedure pr_getallcategories
+as
+begin
+
+SELECT DISTINCT c.categoryid, c.categoryname, c.parentid,
+                             (SELECT        COUNT(*) AS Expr1
+                               FROM            tbl_ProductCategory AS pc
+                               WHERE        (categoryid = c.categoryid) AND (c.status = 1)) AS pcount
+FROM            tbl_category AS c LEFT OUTER JOIN
+                         tbl_ProductCategory AS p ON c.categoryid = p.categoryid
+ORDER BY c.categoryname
+end
+go
+
+create  procedure pr_selstatus
+as
+begin
+ select statusid,statusname from tbl_status
+end
+
